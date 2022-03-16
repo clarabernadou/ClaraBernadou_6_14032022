@@ -1,11 +1,9 @@
-//ADD MULTER
-const multer = require('multer');
+const multer = require('multer'); //import multer
 
-//ADD THE TYPES FOR IMAGES
 const MIME_TYPES = {
-  'image/jpg': 'jpg',
-  'image/jpeg': 'jpg',
-  'image/png': 'png'
+  'image/jpg': 'jpg', //import jpg image type
+  'image/jpeg': 'jpg', //import jpeg image type
+  'image/png': 'png' //import png image type
 };
 
 //CREATE A CALLBACK FOR STORE IMAGES
@@ -20,5 +18,4 @@ const storage = multer.diskStorage({
   }
 });
 
-//EXPORT THE MODULE
 module.exports = multer({storage: storage}).single('image');
