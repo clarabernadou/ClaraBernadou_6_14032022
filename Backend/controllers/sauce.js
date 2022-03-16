@@ -127,7 +127,7 @@ Sauce.findOne({ _id: req.params.id })
         (sauce) => { 
           res.status(200).json({ message: 'Like deleted' }) }) //if like is deleted
 .catch(
-  error => res.status(400).json({ error })) //else return 400 error
+  error => res.status(400).json({ error })) //else return 400
 } else if (sauce.usersDisliked.includes(req.body.userId)) {
   Sauce.updateOne(
     { _id: req.params.id }, { $pull: { usersDisliked: req.body.userId }, $inc: { dislikes: -1 } })
