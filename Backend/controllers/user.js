@@ -3,7 +3,6 @@ const User = require('../models/user');
 //SECURITY
 const bcrypt = require('bcrypt'); //import bcrypt
 const jwt = require('jsonwebtoken'); //import jsonwebtoken
-const passwordValidator = require('password-validator'); //import password validator
 
 //SIGNUP FUNCTIONALITY
 exports.signup = (req, res, next) => {
@@ -13,6 +12,7 @@ exports.signup = (req, res, next) => {
         email: req.body.email, //make a query to use the email
         password: hash //hashed password
       });
+      
       user.save() //to save the user
         .then(() => res.status(201).json({ message: 'User created' })) //if user is created
         .catch(error => res.status(400).json({ error })); //else return 400 error
