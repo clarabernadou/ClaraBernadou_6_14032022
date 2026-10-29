@@ -385,7 +385,7 @@
     banner.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:99999;max-width:340px;padding:10px 12px;' +
       'border-radius:10px;background:#1f2933;color:#fff;font:13px/1.45 Roboto,Arial,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.35)';
     banner.innerHTML = '<strong>Mode démo</strong> : l’API est simulée dans votre navigateur ' +
-      '(les données restent sur votre appareil).<br>Compte test : <code>' + DEMO_USER.email + '</code> / <code>' +
+      '(les données restent sur votre appareil).<br>Compte test : <code style="color:#ffd1b0">' + DEMO_USER.email + '</code> / <code style="color:#ffd1b0">' +
       DEMO_USER.password + '</code><br><a href="#" data-reset style="color:#ffb27a">Réinitialiser la démo</a> · ' +
       '<a href="#" data-close style="color:#ffb27a">Fermer</a>';
     banner.querySelector('[data-close]').addEventListener('click', function (event) {
