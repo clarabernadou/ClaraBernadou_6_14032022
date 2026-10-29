@@ -1,0 +1,109 @@
+[
+  {
+    "_id": "seed-sauce-1",
+    "userId": "demo-user",
+    "name": "Flamme Douce",
+    "manufacturer": "Atelier du Piment",
+    "description": "Une sauce fruitée à la mangue et au piment doux, parfaite pour accompagner les grillades.",
+    "mainPepper": "Piment doux",
+    "imageUrl": "",
+    "heat": 3,
+    "likes": 3,
+    "dislikes": 0,
+    "usersLiked": [
+      "seed-user-1",
+      "seed-user-2",
+      "seed-user-3"
+    ],
+    "usersDisliked": []
+  },
+  {
+    "_id": "seed-sauce-2",
+    "userId": "demo-user",
+    "name": "Braise du Sud",
+    "manufacturer": "Maison Épices",
+    "description": "Une sauce fumée aux piments chipotle, idéale avec les viandes et les légumes rôtis.",
+    "mainPepper": "Chipotle",
+    "imageUrl": "",
+    "heat": 5,
+    "likes": 2,
+    "dislikes": 1,
+    "usersLiked": [
+      "seed-user-1",
+      "seed-user-4"
+    ],
+    "usersDisliked": [
+      "seed-user-5"
+    ]
+  },
+  {
+    "_id": "seed-sauce-3",
+    "userId": "demo-user",
+    "name": "Éclat Vert",
+    "manufacturer": "Jardin Pimenté",
+    "description": "Une sauce fraîche au piment jalapeño, au citron vert et à la coriandre.",
+    "mainPepper": "Jalapeño",
+    "imageUrl": "",
+    "heat": 4,
+    "likes": 2,
+    "dislikes": 0,
+    "usersLiked": [
+      "seed-user-2",
+      "seed-user-3"
+    ],
+    "usersDisliked": []
+  },
+  {
+    "_id": "seed-sauce-4",
+    "userId": "demo-user",
+    "name": "Dragon Rouge",
+    "manufacturer": "Atelier du Piment",
+    "description": "Une sauce très relevée à base de piment habanero et d’ail, pour les amateurs de sensations fortes.",
+    "mainPepper": "Habanero",
+    "imageUrl": "",
+    "heat": 8,
+    "likes": 1,
+    "dislikes": 1,
+    "usersLiked": [
+      "seed-user-1"
+    ],
+    "usersDisliked": [
+      "seed-user-2"
+    ]
+  },
+  {
+    "_id": "seed-sauce-5",
+    "userId": "demo-user",
+    "name": "Soleil d’Espelette",
+    "manufacturer": "Maison Épices",
+    "description": "Une sauce douce et parfumée au piment d’Espelette et à la tomate mûre.",
+    "mainPepper": "Piment d’Espelette",
+    "imageUrl": "",
+    "heat": 2,
+    "likes": 3,
+    "dislikes": 0,
+    "usersLiked": [
+      "seed-user-3",
+      "seed-user-4",
+      "seed-user-5"
+    ],
+    "usersDisliked": []
+  },
+  {
+    "_id": "seed-sauce-6",
+    "userId": "demo-user",
+    "name": "Volcan Noir",
+    "manufacturer": "Jardin Pimenté",
+    "description": "Une sauce extrêmement forte aux piments Carolina Reaper, à utiliser avec la plus grande prudence.",
+    "mainPepper": "Carolina Reaper",
+    "imageUrl": "",
+    "heat": 10,
+    "likes": 0,
+    "dislikes": 2,
+    "usersLiked": [],
+    "usersDisliked": [
+      "seed-user-1",
+      "seed-user-2"
+    ]
+  }
+]
