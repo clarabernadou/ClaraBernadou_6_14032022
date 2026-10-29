@@ -9,7 +9,7 @@
 
   var API_URL = /^https?:\/\/localhost:3000\/api\/(.*)$/;
   var USERS_KEY = 'piiquante_demo_users';
-  var SAUCES_KEY = 'piiquante_demo_sauces';
+  var SAUCES_KEY = 'piiquante_demo_sauces_v2';
   var BANNER_KEY = 'piiquante_demo_banner';
   var DEMO_USER = { userId: 'demo-user', email: 'demo@piiquante.fr', password: 'Demo1234' };
   var RESPONSE_DELAY = 150;
@@ -61,7 +61,8 @@
     return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  /* Illustration générée pour les sauces sans photo (aucune image externe). */
+  /* Illustration générée pour les sauces sans photo (aucune image externe).
+     Angular n’accepte que les images en base64 (PNG, JPEG…) : le SVG est refusé. */
   function bottleArt(name) {
     var colors = ['#c0392b', '#e67e22', '#d35400', '#8e2a1e', '#a93226', '#b9770e'];
     var seed = 0;
@@ -69,15 +70,23 @@
       seed += name.charCodeAt(i);
     }
     var color = colors[seed % colors.length];
-    var initial = escapeXml((name.charAt(0) || '?').toUpperCase());
-    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">' +
-      '<rect width="400" height="400" fill="' + color + '"/>' +
-      '<rect x="150" y="50" width="100" height="40" rx="8" fill="#2c3e50"/>' +
-      '<rect x="165" y="88" width="70" height="50" fill="#ecf0f1"/>' +
-      '<rect x="115" y="130" width="170" height="240" rx="40" fill="#f7f7f7"/>' +
-      '<text x="200" y="280" font-family="Arial, sans-serif" font-size="96" font-weight="700" text-anchor="middle" fill="' + color + '">' + initial + '</text>' +
-      '</svg>';
-    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    var canvas = document.createElement('canvas');
+    canvas.width = 400;
+    canvas.height = 400;
+    var context = canvas.getContext('2d');
+    context.fillStyle = color;
+    context.fillRect(0, 0, 400, 400);
+    context.fillStyle = '#2c3e50';
+    context.fillRect(150, 50, 100, 40);
+    context.fillStyle = '#ecf0f1';
+    context.fillRect(165, 88, 70, 50);
+    context.fillStyle = '#f7f7f7';
+    context.fillRect(115, 130, 170, 240);
+    context.fillStyle = color;
+    context.font = 'bold 96px Arial, sans-serif';
+    context.textAlign = 'center';
+    context.fillText((name.charAt(0) || '?').toUpperCase(), 200, 300);
+    return canvas.toDataURL('image/png');
   }
 
   /* Réduit la photo envoyée par le visiteur pour tenir dans le localStorage. */
