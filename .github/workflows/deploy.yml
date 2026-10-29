@@ -24,6 +24,7 @@ jobs:
           cp demo/demo-api.js demo/sauces.json site/
           sed -i 's|<base href="/">|<base href="/ClaraBernadou_6_14032022/">|' site/index.html
           sed -i 's|</head>|<script src="demo-api.js"></script></head>|' site/index.html
+          sed -i 's|\.\./\.\./assets/|assets/|g' site/main.*.js
           cp site/index.html site/404.html
       - uses: actions/upload-pages-artifact@v3
         with:
