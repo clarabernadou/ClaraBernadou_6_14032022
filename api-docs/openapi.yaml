@@ -1,0 +1,311 @@
+openapi: 3.0.3
+info:
+  title: Piiquante (Hot Takes) — API back-end
+  version: 1.0.0
+  description: |
+    API REST de l'application Hot Takes de Piiquante : comptes utilisateurs et sauces piquantes avec image, notes « j'aime » et « je n'aime pas ».
+
+    Cette documentation est rédigée à partir du code du dépôt (routes, middlewares et contrôleurs). Elle décrit l'API ; aucun serveur n'est hébergé ici.
+
+    **Authentification** : les routes des sauces exigent un jeton JWT (valable 24 h) dans l'en-tête `Authorization: Bearer <jeton>`, obtenu avec `POST /api/auth/login`.
+servers:
+  - url: http://localhost:3000
+    description: Serveur local
+tags:
+  - name: Utilisateurs
+  - name: Sauces
+paths:
+  /api/auth/signup:
+    post:
+      tags: [Utilisateurs]
+      summary: Créer un compte
+      description: "Le mot de passe doit comporter plus de 8 et moins de 100 caractères. Il est haché avant l'enregistrement."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        '201':
+          description: Compte créé
+          content:
+            application/json:
+              example:
+                message: User created
+        '400':
+          description: Mot de passe hors limites ou adresse e-mail déjà utilisée
+  /api/auth/login:
+    post:
+      tags: [Utilisateurs]
+      summary: Se connecter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        '200':
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                  token:
+                    type: string
+                    description: Jeton JWT valable 24 heures
+        '401':
+          description: Utilisateur inconnu ou mot de passe incorrect
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/sauces:
+    get:
+      tags: [Sauces]
+      summary: Lister les sauces
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Toutes les sauces
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sauce'
+        '400':
+          description: Erreur de lecture
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Sauces]
+      summary: Créer une sauce
+      description: "Requête multipart : le champ `sauce` contient l'objet sauce sérialisé en JSON, le champ `image` le fichier."
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [sauce, image]
+              properties:
+                sauce:
+                  type: string
+                  description: "Sauce au format JSON (userId, name, manufacturer, description, mainPepper, heat)"
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Sauce enregistrée
+          content:
+            application/json:
+              example:
+                message: Object saved
+        '400':
+          description: Données invalides
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/sauces/{id}:
+    get:
+      tags: [Sauces]
+      summary: Lire une sauce
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SauceId'
+      responses:
+        '200':
+          description: Sauce trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sauce'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Sauce introuvable
+    put:
+      tags: [Sauces]
+      summary: Modifier une sauce
+      description: "Avec une nouvelle image : requête multipart (champs `sauce` et `image`). Sans image : corps JSON avec les champs à modifier."
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SauceId'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                sauce:
+                  type: string
+                  description: Sauce au format JSON
+                image:
+                  type: string
+                  format: binary
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SauceInput'
+      responses:
+        '201':
+          description: Sauce modifiée
+          content:
+            application/json:
+              example:
+                message: Modified object
+        '400':
+          description: Données invalides
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      tags: [Sauces]
+      summary: Supprimer une sauce
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SauceId'
+      responses:
+        '200':
+          description: Sauce supprimée
+          content:
+            application/json:
+              example:
+                message: Deleted!
+        '400':
+          description: Suppression refusée ou erreur
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Sauce introuvable
+  /api/sauces/{id}/like:
+    post:
+      tags: [Sauces]
+      summary: Aimer, ne pas aimer ou retirer sa note
+      description: "`like` vaut 1 pour aimer, -1 pour ne pas aimer, 0 pour annuler sa note précédente."
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SauceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userId, like]
+              properties:
+                userId:
+                  type: string
+                like:
+                  type: integer
+                  enum: [-1, 0, 1]
+      responses:
+        '200':
+          description: Note enregistrée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum: [Add like, Add dislike, Like deleted, Dislike deleted]
+        '400':
+          description: Erreur de mise à jour
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    SauceId:
+      name: id
+      in: path
+      required: true
+      description: Identifiant de la sauce (_id)
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Jeton absent, invalide ou expiré
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+    Credentials:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 9
+          maxLength: 99
+    SauceInput:
+      type: object
+      properties:
+        name:
+          type: string
+        manufacturer:
+          type: string
+        description:
+          type: string
+        mainPepper:
+          type: string
+        heat:
+          type: integer
+          minimum: 1
+          maximum: 10
+    Sauce:
+      type: object
+      properties:
+        _id:
+          type: string
+        userId:
+          type: string
+        name:
+          type: string
+        manufacturer:
+          type: string
+        description:
+          type: string
+        mainPepper:
+          type: string
+        imageUrl:
+          type: string
+        heat:
+          type: integer
+        likes:
+          type: integer
+        dislikes:
+          type: integer
+        usersLiked:
+          type: array
+          items:
+            type: string
+        usersDisliked:
+          type: array
+          items:
+            type: string
